@@ -94,7 +94,7 @@ try {
 
 // 4. Pref pane registered exactly once (duplicate = reinstall bug).
 try {
-	const ours = Zotero.PreferencePanes.pluginPanes.filter(p => p.pluginID === "weavero@mjthoraval");
+	const ours = Zotero.PreferencePanes.pluginPanes.filter(p => p.pluginID === "weavero-obsidian@zhibird");
 	if (ours.length !== 1) F("pref panes registered: " + ours.length + " (want 1)");
 } catch (e) {}
 
@@ -135,7 +135,7 @@ try {
 let version = "?";
 try {
 	const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
-	const a = await AddonManager.getAddonByID("weavero@mjthoraval");
+	const a = await AddonManager.getAddonByID("weavero-obsidian@zhibird");
 	version = a && a.version;
 } catch (e) {}
 

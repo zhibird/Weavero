@@ -891,7 +891,7 @@ describe("Weavero — default child (attachments, notes, links)", () => {
             const proto = /** @type {any} */ (Zotero.Item.prototype);
             const before = proto.getBestAttachment;
             const Z = /** @type {any} */ (Zotero);
-            await Z._wvDefAttPluginObserver.startup({ id: "weavero@mjthoraval" });
+            await Z._wvDefAttPluginObserver.startup({ id: "weavero-obsidian@zhibird" });
             expect(proto.getBestAttachment).to.equal(before);
         });
 

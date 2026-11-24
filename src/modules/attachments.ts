@@ -992,7 +992,7 @@ class _AttachmentsMixin {
             const reassert = (params: any) => {
                 try {
                     // Never react to ourselves: our own startup already wires.
-                    if (params && params.id === "weavero@mjthoraval") return;
+                    if (params && params.id === "weavero-obsidian@zhibird") return;
                     // Resolve the LIVE plugin — this observer outlives builds.
                     const lp: any = Zotero.Weavero && Zotero.Weavero.plugin;
                     if (lp && !lp._wvDestroyed) lp._wvWireDefaultAttachment();

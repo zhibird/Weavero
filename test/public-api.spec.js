@@ -639,7 +639,7 @@ describe("Weavero — public API: a plugin that draws comments itself (declareCo
         const cases = [[undefined, "bad-arguments"], [null, "bad-arguments"], ["x", "bad-arguments"],
             [{ pluginId: 42, surfaces: ["sidebar"] }, "bad-arguments"], [{ pluginId: PID }, "bad-arguments"],
             [{ pluginId: PID, surfaces: [] }, "bad-arguments"], [{ pluginId: PID, surfaces: ["nope"] }, "bad-arguments"],
-            [{ pluginId: PID, surfaces: "sidebar" }, "bad-arguments"], [{ pluginId: "weavero@mjthoraval", surfaces: ["sidebar"] }, "bad-arguments"],
+            [{ pluginId: PID, surfaces: "sidebar" }, "bad-arguments"], [{ pluginId: "weavero-obsidian@zhibird", surfaces: ["sidebar"] }, "bad-arguments"],
             [bad, "bad-arguments"], [{ pluginId: "no-such-plugin@weavero.test", surfaces: ["sidebar"] }, "unknown-plugin"]];
         for (let i = 0; i < cases.length; i++) {
             const p = api.declareCommentRenderer(cases[i][0]);

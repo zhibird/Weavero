@@ -27,7 +27,7 @@ describe("Weavero — Firefox 153 compatibility", () => {
         // Deliberately NOT wrapped in a try/skip: a guard that quietly skips
         // itself when it cannot read the bundle is worse than no guard, since
         // it would report green while checking nothing.
-        const rootURI = await Zotero.Plugins.getRootURI("weavero@mjthoraval");
+        const rootURI = await Zotero.Plugins.getRootURI("weavero-obsidian@zhibird");
         const res = await fetch(rootURI + "index.js");
         bundle = await res.text();
         expect(bundle.length, "bundle looks empty").to.be.above(1000);

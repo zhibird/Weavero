@@ -27714,7 +27714,7 @@ class _ReaderPanelsMixin {
                 }
             };
             Zotero.Reader.registerEventListener(
-                "createThumbnailContextMenu", handler, "weavero@mjthoraval");
+                "createThumbnailContextMenu", handler, "weavero-obsidian@zhibird");
             this._thumbnailMenuHandler = handler;
         } catch (e) {
             Zotero.debug("[Weavero] _setupThumbnailContextMenu err: " + e);

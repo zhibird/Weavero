@@ -20,7 +20,7 @@ describe("Weavero — Settings grey-out matches the code's gates", () => {
 
     // Parsed the way Zotero mounts plugin panes.
     const pane = async () => {
-        const rootURI = await Zotero.Plugins.getRootURI("weavero@mjthoraval");
+        const rootURI = await Zotero.Plugins.getRootURI("weavero-obsidian@zhibird");
         const html = await (await fetch(rootURI + "prefs.html")).text();
         const frag = Zotero.getMainWindow().MozXULElement.parseXULToFragment(html);
         const ms = frag.querySelector(".main-section");

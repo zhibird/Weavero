@@ -98,7 +98,7 @@
 			// Reload leg: the plugin's destroy() must capture + freeze the store,
 			// and the fresh instance must NOT rewrite it with a partial view.
 			const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
-			const a = await AddonManager.getAddonByID("weavero@mjthoraval");
+			const a = await AddonManager.getAddonByID("weavero-obsidian@zhibird");
 			await a.reload();
 			await sleep(4000);
 		}

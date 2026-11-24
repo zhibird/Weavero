@@ -2945,7 +2945,7 @@ class _TabSplitMixin {
             });
             const id = MM.registerMenu({
                 menuID: "weavero-tab-split",
-                pluginID: "weavero@mjthoraval",
+                pluginID: "weavero-obsidian@zhibird",
                 target: "main/tab",
                 menus: [
                     // Firefox (tab-context-menu.js, `hasSplitViewTab` over every

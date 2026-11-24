@@ -7333,7 +7333,7 @@ class _TabsMixin {
             const self = this;
             const id = (Zotero as any).MenuManager.registerMenu({
                 menuID: "weavero-tab-pin",
-                pluginID: "weavero@mjthoraval",
+                pluginID: "weavero-obsidian@zhibird",
                 target: "main/tab",
                 menus: [{
                     menuType: "menuitem",
@@ -8053,7 +8053,7 @@ class _TabsMixin {
             this._unregisterDevNewWindowMenu();
             const id = (Zotero as any).MenuManager.registerMenu({
                 menuID: "weavero-dev-new-window",
-                pluginID: "weavero@mjthoraval",
+                pluginID: "weavero-obsidian@zhibird",
                 target: "main/tab",
                 menus: [{
                     menuType: "menuitem",
@@ -8114,7 +8114,7 @@ class _TabsMixin {
             this._unregisterReopenClosedMenu();
             const id = (Zotero as any).MenuManager.registerMenu({
                 menuID: "weavero-reopen-closed",
-                pluginID: "weavero@mjthoraval",
+                pluginID: "weavero-obsidian@zhibird",
                 target: "main/tab",
                 menus: [{
                     menuType: "menuitem",

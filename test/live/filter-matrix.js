@@ -611,7 +611,7 @@
         try {
             const { AddonManager } = ChromeUtils.importESModule(
                 "resource://gre/modules/AddonManager.sys.mjs");
-            R.weavero = (await AddonManager.getAddonByID("weavero@mjthoraval")).version;
+            R.weavero = (await AddonManager.getAddonByID("weavero-obsidian@zhibird")).version;
             await zp.collectionsView.selectLibrary(Zotero.Libraries.userLibraryID);
             await zp.itemsView.waitForLoad();
             await search("");                    // rule 3

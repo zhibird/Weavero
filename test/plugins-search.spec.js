@@ -27,7 +27,7 @@ describe("Weavero — Plugins Manager search box", () => {
 		main.appendChild(list);
 		const cards = [
 			["tree@x", "Tree Style Tabs", "organize your tabs in a tree"],
-			["weavero@mjthoraval", "Weavero", "filters, links, bookmarks"],
+			["weavero-obsidian@zhibird", "Weavero for Obsidian", "filters, links, bookmarks"],
 			["bbt@x", "Better BibTeX", "citation keys"],
 		];
 		for (const [id, name, desc] of cards) {
@@ -64,13 +64,13 @@ describe("Weavero — Plugins Manager search box", () => {
 	it("filters cards by name, description or id as you type; Escape clears", () => {
 		const { input, type, visible, mw } = fixture();
 		assert.isOk(input, "search box injected");
-		assert.deepEqual(visible(), ["tree@x", "weavero@mjthoraval", "bbt@x"]);
+		assert.deepEqual(visible(), ["tree@x", "weavero-obsidian@zhibird", "bbt@x"]);
 		type("tree");
 		assert.deepEqual(visible(), ["tree@x"], "name match");
 		type("citation");
 		assert.deepEqual(visible(), ["bbt@x"], "description match");
-		type("mjthoraval");
-		assert.deepEqual(visible(), ["weavero@mjthoraval"], "id match");
+		type("zhibird");
+		assert.deepEqual(visible(), ["weavero-obsidian@zhibird"], "id match");
 		input.dispatchEvent(new mw.KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true }));
 		assert.equal(input.value, "", "Escape empties the box");
 		assert.lengthOf(visible(), 3, "and every card is back");

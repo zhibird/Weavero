@@ -130,7 +130,7 @@ describe("Weavero — a plugin reload leaves no listener of the previous instanc
         if (!wvT.plugin()) wvT.absent("plugin");
         main = Zotero.getMainWindow();
         const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
-        const addon = await AddonManager.getAddonByID("weavero@mjthoraval");
+        const addon = await AddonManager.getAddonByID("weavero-obsidian@zhibird");
         if (!addon) wvT.absent("the Weavero add-on in AddonManager");
 
         const pdfTab = await wvT.createTestPDFItem("wv-listeners-tab");

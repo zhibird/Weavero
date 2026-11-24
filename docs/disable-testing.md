@@ -80,7 +80,7 @@ note editors showing links.
 
 1. `test/restart/snapshot.js` → save as `before.json`.
 2. Disable Weavero (Plugins Manager toggle, or
-   `(await AddonManager.getAddonByID("weavero@mjthoraval")).disable()`).
+   `(await AddonManager.getAddonByID("weavero-obsidian@zhibird")).disable()`).
 3. `test/disable/leftovers.js` → must be `pass: true`.
 4. Eyeball the natives: link colors in an open note (native blue), tab strip
    (no chips, pinned tab full width), List All Tabs popup (native layout),

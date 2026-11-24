@@ -103,7 +103,7 @@ describe("Weavero — menus take their words from weavero.ftl", function () {
 
     const isWeavero = (el) => {
         if (el.id && el.id.startsWith("wv-")) return true;
-        for (const c of el.classList) if (c.startsWith("wv-") || c.startsWith("weavero@mjthoraval-")) return true;
+        for (const c of el.classList) if (c.startsWith("wv-") || c.startsWith("weavero-obsidian@zhibird-")) return true;
         for (const a of el.attributes) if (a.name.startsWith("data-wv")) return true;
         return false;
     };
@@ -510,7 +510,7 @@ describe("Weavero — menus take their words from weavero.ftl", function () {
     });
 
     it("every weavero-menu id the code names is in weavero.ftl, and every menu message there is used", async () => {
-        const rootURI = await Zotero.Plugins.getRootURI("weavero@mjthoraval");
+        const rootURI = await Zotero.Plugins.getRootURI("weavero-obsidian@zhibird");
         const ftl = await (await fetch(rootURI + "locale/en-US/weavero.ftl")).text();
         const inFtl = [...ftl.matchAll(/^(weavero-menu-[a-z0-9-]+)\s*=/gm)].map(m => m[1]);
         const srcs = [];
@@ -656,15 +656,15 @@ describe("Weavero — menus take their words from weavero.ftl", function () {
     });
 
     it("the reader's own (React) context menu gets Weavero's icons whatever the labels say", () => {
-        lib.wvL10nStub((id) => (/^weavero-menu-reader-ann-/.test(id) ? "«" + id + "» (fr)" : null));
+        lib.wvL10nStub((id) => (/^weavero-menu-reader-(?:ann-|copy-obsidian-backlink$)/.test(id) ? "«" + id + "» (fr)" : null));
         const host = /** @type {any} */ (doc.createElementNS("http://www.w3.org/1999/xhtml", "div"));
         host.className = "context-menu";
         try {
             const reader = { type: "pdf", itemID: A.id, tabID: "wv-l10n-fake-tab", _item: A };
             const labels = [];
             wv._contextHandlerImpl({ reader, params: { ids: [X.key] }, append: (...xs) => { for (const x of xs) labels.push(String(x.label)); } });
-            const want = labels.filter(l => /add-related|copy-select|copy-open/.test(l));
-            assert.strictEqual(want.length, 3, "Add Related, Copy Select Link, Copy Open Link in the stand-in language");
+            const want = labels.filter(l => /add-related|copy-select|copy-open|copy-obsidian-backlink/.test(l));
+            assert.strictEqual(want.length, 4, "the four commands have stand-in translations");
             for (const l of labels) {
                 const row = /** @type {any} */ (doc.createElementNS("http://www.w3.org/1999/xhtml", "div"));
                 row.className = "row basic";
@@ -672,7 +672,7 @@ describe("Weavero — menus take their words from weavero.ftl", function () {
                 host.appendChild(row);
             }
             doc.documentElement.appendChild(host);
-            assert.strictEqual(wv.decorateContextMenu(doc), 3, "each of the three decorated");
+            assert.strictEqual(wv.decorateContextMenu(doc), want.length, "each command is decorated");
         }
         finally { host.remove(); lib.wvL10nStub(null); }
     });

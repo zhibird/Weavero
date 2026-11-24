@@ -191,7 +191,7 @@ try {
 
 // 5. Pref pane unregistered.
 try {
-	const ours = Zotero.PreferencePanes.pluginPanes.filter(p => p.pluginID === "weavero@mjthoraval");
+	const ours = Zotero.PreferencePanes.pluginPanes.filter(p => p.pluginID === "weavero-obsidian@zhibird");
 	if (ours.length) F("pref pane(s) still registered: " + ours.length);
 } catch (e) {}
 

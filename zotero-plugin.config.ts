@@ -83,8 +83,9 @@ export default defineConfig({
   // Identity — must match src/manifest.json so Zotero installs the
   // right add-on into the temp test profile.
   name: "Weavero",
-  id: "weavero@mjthoraval",
+  id: "weavero-obsidian@zhibird",
   namespace: "weavero",
+  updateURL: "https://github.com/{{owner}}/{{repo}}/releases/latest/download/{{updateJson}}",
 
   build: {
     // Non-bundled assets are copied verbatim; .ts files are

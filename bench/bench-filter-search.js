@@ -376,7 +376,7 @@
                 const sleep = (ms) => new Promise(r => win.setTimeout(r, ms));
                 const { AddonManager } = ChromeUtils.importESModule(
                     "resource://gre/modules/AddonManager.sys.mjs");
-                const addon = await AddonManager.getAddonByID("weavero@mjthoraval");
+                const addon = await AddonManager.getAddonByID("weavero-obsidian@zhibird");
                 const N = R.native = { ops: {}, status: "running" };
                 try {
                     await addon.disable();

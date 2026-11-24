@@ -6811,7 +6811,7 @@ class _TabGroupsMixin {
             const self: any = this;
             const id = Zotero.MenuManager.registerMenu({
                 menuID: "weavero-tab-groups",
-                pluginID: "weavero@mjthoraval",
+                pluginID: "weavero-obsidian@zhibird",
                 target: "main/tab",
                 menus: [
                     {

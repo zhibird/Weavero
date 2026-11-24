@@ -172,7 +172,7 @@ describe("Weavero — a disable leaves no Weavero code in Zotero", function () {
         if (!wvT.plugin()) wvT.absent("plugin");
         main = Zotero.getMainWindow();
         const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
-        addon = await AddonManager.getAddonByID("weavero@mjthoraval");
+        addon = await AddonManager.getAddonByID("weavero-obsidian@zhibird");
         if (!addon) wvT.absent("the Weavero add-on in AddonManager");
         pdf = await wvT.createTestPDFItem("wv-disable-leftovers");
         pdf2 = await wvT.createTestPDFItem("wv-disable-leftovers-2");

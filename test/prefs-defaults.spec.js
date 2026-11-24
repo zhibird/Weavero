@@ -165,7 +165,7 @@ describe("Weavero — Settings prefs have registered defaults", () => {
     // box. Compared against the chip catalogue, not a copy of the URLs.
     it("the six type boxes carry the filter chips' glyphs", async () => {
         const wv = Zotero.Weavero.plugin;
-        const rootURI = await Zotero.Plugins.getRootURI("weavero@mjthoraval");
+        const rootURI = await Zotero.Plugins.getRootURI("weavero-obsidian@zhibird");
         const html = await (await fetch(rootURI + "prefs.html")).text();
         const cap = k => k.charAt(0).toUpperCase() + k.slice(1);
         const missing = [];

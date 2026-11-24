@@ -159,7 +159,7 @@ describe("Weavero — reader and note window wiring, characterized (reloads the 
         wvT.method("_wvOpenNoteInDeckWindow");
         main = Zotero.getMainWindow();
         const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
-        const addon = await AddonManager.getAddonByID("weavero@mjthoraval");
+        const addon = await AddonManager.getAddonByID("weavero-obsidian@zhibird");
         if (!addon) wvT.absent("the Weavero add-on in AddonManager");
 
         const saved = {};

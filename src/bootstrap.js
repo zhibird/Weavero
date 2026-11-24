@@ -8,7 +8,9 @@
 // exposes its lifecycle on `Zotero.Weavero.hooks`. This file
 // stays small and stable; the bundle is what changes per release.
 
-/* global Zotero, Services */
+/* global Zotero, Services, ChromeUtils */
+
+let activeHooks = null;
 
 function install() {}
 function uninstall() {}
@@ -16,6 +18,12 @@ function uninstall() {}
 async function startup({ id, version, rootURI }, reason) {
     await Zotero.initializationPromise;
     try {
+        const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
+        const upstream = await AddonManager.getAddonByID("weavero@mjthoraval");
+        if (upstream?.isActive) {
+            Zotero.debug("[Weavero for Obsidian] Disable the original Weavero before enabling this fork.");
+            return;
+        }
         // `ignoreCache: true` so a fresh install of the same version
         // path (e.g. during dev) actually picks up the new bundled
         // index.js. Without this the bytecode cache happily serves
@@ -34,7 +42,8 @@ async function startup({ id, version, rootURI }, reason) {
         // e.g. the session verify-and-repair — ONLY on a real app startup
         // (a hot-reload's repair once resurrected deliberately-closed tabs
         // from a stale boot snapshot).
-        Zotero.Weavero.hooks.onStartup({ id, version, rootURI, reason });
+        activeHooks = Zotero.Weavero.hooks;
+        activeHooks.onStartup({ id, version, rootURI, reason });
     } else {
         Zotero.debug("[Weavero] index.js loaded but hooks missing");
     }
@@ -45,23 +54,22 @@ function shutdown(_data, reason) {
     // ADDON_UNINSTALL=6, APP_SHUTDOWN=2, ADDON_UPGRADE=7, …). Forwarded so the
     // plugin can migrate reader tabs to the main window on a real disable but
     // not on a hot-reload/upgrade or app-quit.
-    if (Zotero.Weavero && Zotero.Weavero.hooks
-            && Zotero.Weavero.hooks.onShutdown) {
-        Zotero.Weavero.hooks.onShutdown(reason);
+    const hooks = activeHooks;
+    activeHooks = null;
+    if (hooks && Zotero.Weavero?.hooks === hooks) {
+        hooks.onShutdown(reason);
+        delete Zotero.Weavero;
     }
-    delete Zotero.Weavero;
 }
 
 function onMainWindowLoad({ window }) {
-    if (Zotero.Weavero && Zotero.Weavero.hooks
-            && Zotero.Weavero.hooks.onMainWindowLoad) {
-        Zotero.Weavero.hooks.onMainWindowLoad(window);
+    if (activeHooks && Zotero.Weavero?.hooks === activeHooks) {
+        activeHooks.onMainWindowLoad(window);
     }
 }
 
 function onMainWindowUnload({ window }) {
-    if (Zotero.Weavero && Zotero.Weavero.hooks
-            && Zotero.Weavero.hooks.onMainWindowUnload) {
-        Zotero.Weavero.hooks.onMainWindowUnload(window);
+    if (activeHooks && Zotero.Weavero?.hooks === activeHooks) {
+        activeHooks.onMainWindowUnload(window);
     }
 }

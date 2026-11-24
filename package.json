@@ -1,12 +1,12 @@
 {
   "name": "weavero",
-  "version": "1.1.1-obsidian.3",
+  "version": "1.1.1",
   "private": true,
   "description": "A Zotero plugin with filters, clickable links, bookmarks, tabs management and other improvements.",
-  "homepage": "https://github.com/mjthoraval/Weavero",
+  "homepage": "https://github.com/zhibird/Weavero",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mjthoraval/Weavero.git"
+    "url": "git+https://github.com/zhibird/Weavero.git"
   },
   "license": "AGPL-3.0",
   "type": "module",
@@ -24,8 +24,8 @@
     "test:compat:bump": "node test/compat-plugins/bump-pins.mjs"
   },
   "config": {
-    "addonName": "Weavero",
-    "addonID": "weavero@mjthoraval",
+    "addonName": "Weavero for Obsidian",
+    "addonID": "weavero-obsidian@zhibird",
     "addonRef": "weavero",
     "addonInstance": "Weavero",
     "prefsPrefix": "extensions.zotero.weavero"

@@ -12070,7 +12070,7 @@ class _ReaderMixin {
         try {
             const theme = isDark ? "dark" : "light";
             const newURL = this._rootURI + "icons/icon-" + theme + "-32.png";
-            const pluginID = "weavero@mjthoraval";
+            const pluginID = "weavero-obsidian@zhibird";
             const panes = (Zotero.PreferencePanes
                 && Zotero.PreferencePanes.pluginPanes) || [];
             const ours = [];

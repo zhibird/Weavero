@@ -134,7 +134,7 @@
             RUN.weavero = null;
             try {
                 const { AddonManager } = ChromeUtils.importESModule("resource://gre/modules/AddonManager.sys.mjs");
-                const a = await AddonManager.getAddonByID("weavero@mjthoraval");
+                const a = await AddonManager.getAddonByID("weavero-obsidian@zhibird");
                 RUN.weavero = (a && a.version) || null;
             }
             catch (e) {}

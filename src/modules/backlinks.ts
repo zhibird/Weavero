@@ -55,7 +55,7 @@ export const WV_BL_COLUMN_KEY = "weaveroBacklinks";
 export const WV_LK_COLUMN_KEY = "weaveroLinks";
 /** The External Links column (2026-10-30): the web and app links. */
 export const WV_EXT_COLUMN_KEY = "weaveroExtLinks";
-export const WV_BL_PLUGIN_ID = "weavero@mjthoraval";
+export const WV_BL_PLUGIN_ID = "weavero-obsidian@zhibird";
 const BL_STYLE_ID = "wv-backlinks-style";
 const BL_MENU_ID = "wv-backlinks-menu";
 const BL_FTL = "weavero.ftl";

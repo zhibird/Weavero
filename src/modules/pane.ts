@@ -1915,7 +1915,7 @@ class _PaneMixin {
                     catch (e) { Zotero.debug("[Weavero] collection Open in New Window err: " + e); }
                 },
             }];
-            const id = MM.registerMenu({ menuID: "weavero-collection-open-window", pluginID: "weavero@mjthoraval", target: "main/library/collection", menus });
+            const id = MM.registerMenu({ menuID: "weavero-collection-open-window", pluginID: "weavero-obsidian@zhibird", target: "main/library/collection", menus });
             (this as any)._wvCollectionMenuID = id || null;
             (this as any)._wvCollectionMenus = menus;
             this._wvPurgeCollectionMenuStrays();
@@ -2290,7 +2290,7 @@ class _PaneMixin {
                 ["weavero-menubar-edit-advsearch", "main/menubar/edit", editMenus],
                 ["weavero-menubar-reader-file-windows", "reader/menubar/file", readerFileMenus],
             ] as any[]) {
-                const id = MM.registerMenu({ menuID, pluginID: "weavero@mjthoraval", target, menus });
+                const id = MM.registerMenu({ menuID, pluginID: "weavero-obsidian@zhibird", target, menus });
                 if (id) ids.push(id);
             }
             (this as any)._wvMenubarMenuIDs = ids;
@@ -8797,7 +8797,7 @@ class _PaneMixin {
             const tabEntries: any[] = self._wvTabMenuManagerEntries();
             const id = (Zotero as any).MenuManager.registerMenu({
                 menuID: "weavero-tab-copy-links",
-                pluginID: "weavero@mjthoraval",
+                pluginID: "weavero-obsidian@zhibird",
                 target: "main/tab",
                 menus: [copyAsSubmenu, ...tabEntries],
             });
@@ -10454,7 +10454,7 @@ class _PaneMixin {
                 ? (Zotero.ItemTreeManager as any).registerColumn({
                 dataKey: "weaveroAnnotations",
                 label: "Annotations",
-                pluginID: "weavero@mjthoraval",
+                pluginID: "weavero-obsidian@zhibird",
                 // General "any annotation" glyph (Zotero's own item-pane
                 // annotation-count icon), not the highlight-specific one -- the
                 // column counts ALL annotation types, not just highlights.
@@ -10569,7 +10569,7 @@ class _PaneMixin {
             const tagsKey = (Zotero.ItemTreeManager as any).registerColumn({
                 dataKey: "weaveroTags",
                 label: "Tags",
-                pluginID: "weavero@mjthoraval",
+                pluginID: "weavero-obsidian@zhibird",
                 iconPath: "chrome://zotero/skin/16/universal/tag.svg",
                 // Wide enough for "manual|auto" when the auto count is
                 // on; otherwise the same 30px the Annotations column
@@ -10692,7 +10692,7 @@ class _PaneMixin {
                 ? (Zotero.ItemTreeManager as any).registerColumn({
                 dataKey: "weaveroRelated",
                 label: "Related",
-                pluginID: "weavero@mjthoraval",
+                pluginID: "weavero-obsidian@zhibird",
                 iconPath: "chrome://zotero/skin/16/universal/related.svg",
                 width: String(WV_COUNT_COL_MIN),
                 minWidth: WV_COUNT_COL_MIN,
@@ -10751,7 +10751,7 @@ class _PaneMixin {
                 ? (Zotero.ItemTreeManager as any).registerColumn({
                 dataKey: WV_BL_COLUMN_KEY,
                 label: "Backlinks",
-                pluginID: "weavero@mjthoraval",
+                pluginID: "weavero-obsidian@zhibird",
                 iconPath: WV_BL_ICON_CONTEXT,
                 width: String(WV_COUNT_COL_MIN),
                 minWidth: WV_COUNT_COL_MIN,
@@ -10807,7 +10807,7 @@ class _PaneMixin {
                 ? (Zotero.ItemTreeManager as any).registerColumn({
                 dataKey: WV_LK_COLUMN_KEY,
                 label: "Item Links",
-                pluginID: "weavero@mjthoraval",
+                pluginID: "weavero-obsidian@zhibird",
                 iconPath: WV_LK_ICON_CONTEXT,
                 width: String(WV_COUNT_COL_MIN),
                 minWidth: WV_COUNT_COL_MIN,
@@ -10851,7 +10851,7 @@ class _PaneMixin {
                 ? (Zotero.ItemTreeManager as any).registerColumn({
                 dataKey: WV_EXT_COLUMN_KEY,
                 label: "External Links",
-                pluginID: "weavero@mjthoraval",
+                pluginID: "weavero-obsidian@zhibird",
                 iconPath: WV_EXT_ICON_CONTEXT,
                 width: String(WV_COUNT_COL_MIN),
                 minWidth: WV_COUNT_COL_MIN,

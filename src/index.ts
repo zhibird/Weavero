@@ -2203,7 +2203,7 @@ class WeaveroPlugin {
             // to the prefs sidebar.
             try {
                 const existing = (Zotero.PreferencePanes as any).pluginPanes
-                    .filter((p) => p.pluginID === "weavero@mjthoraval");
+                    .filter((p) => p.pluginID === "weavero-obsidian@zhibird");
                 for (const p of existing) {
                     Zotero.PreferencePanes.unregister(p.id);
                 }
@@ -2220,7 +2220,7 @@ class WeaveroPlugin {
             // existing (e.g. the post-init "navigate to Weavero"
             // path) race against the pane actually appearing.
             await Zotero.PreferencePanes.register({
-                pluginID : "weavero@mjthoraval",
+                pluginID : "weavero-obsidian@zhibird",
                 src      : _rootURI + "prefs.html",
                 scripts  : [_rootURI + "prefs.js"],
                 label    : "Weavero",
@@ -2729,7 +2729,7 @@ class WeaveroPlugin {
     /** init phase 2: Zotero.Reader event listeners (sidebar, view, popups), under the full addon id. */
     _wvInitReaderEvents() {
         // 2. Reader event listeners.
-        // The pluginID MUST be the full addon ID ("weavero@mjthoraval"),
+        // The pluginID MUST be the full addon ID ("weavero-obsidian@zhibird"),
         // not a short slug. Zotero's `Plugins.addObserver({shutdown})`
         // hook calls `_unregisterEventListenerByPluginID(id)` with the
         // addon ID, filtering listeners by `pluginID !== id`. A short
@@ -2738,13 +2738,13 @@ class WeaveroPlugin {
         // TWO live listeners — visible to the user as duplicate toolbar
         // buttons in standalone reader windows.
         Zotero.Reader.registerEventListener(
-            "renderSidebarAnnotationHeader", this._sidebarHandler, "weavero@mjthoraval");
+            "renderSidebarAnnotationHeader", this._sidebarHandler, "weavero-obsidian@zhibird");
         Zotero.Reader.registerEventListener(
-            "createAnnotationContextMenu", this._contextHandler, "weavero@mjthoraval");
+            "createAnnotationContextMenu", this._contextHandler, "weavero-obsidian@zhibird");
         Zotero.Reader.registerEventListener(
-            "createViewContextMenu", this._viewContextHandler, "weavero@mjthoraval");
+            "createViewContextMenu", this._viewContextHandler, "weavero-obsidian@zhibird");
         Zotero.Reader.registerEventListener(
-            "renderToolbar", this._toolbarHandler, "weavero@mjthoraval");
+            "renderToolbar", this._toolbarHandler, "weavero-obsidian@zhibird");
 
         // 2b. Watch for standalone note windows opening and apply the
         // Firefox-style strip if the compactTitleBarNote pref is on.
@@ -3619,7 +3619,7 @@ class WeaveroPlugin {
                             for (const entry of Zp.panes.entries()) {
                                 const pane: any = entry[1];
                                 if (pane
-                                        && pane.pluginID === "weavero@mjthoraval") {
+                                        && pane.pluginID === "weavero-obsidian@zhibird") {
                                     Zp.navigateToPane(pane.id);
                                     Zotero.debug("[Weavero] reopenOnInit -> "
                                         + pane.id);
@@ -4295,7 +4295,7 @@ class WeaveroPlugin {
         //     dev iteration drops the user on Zotero's General pane
         //     because Settings auto-switches when our pane disappears.
         //     Note: Zotero assigns each plugin pane a generated id like
-        //     "plugin-pane-XXXXXXXX-weavero@mjthoraval" — match by
+        //     "plugin-pane-XXXXXXXX-weavero-obsidian@zhibird" — match by
         //     pluginID via Zotero_Preferences.panes Map, not by literal id.
         try {
             const wm = Components.classes[
@@ -4309,7 +4309,7 @@ class WeaveroPlugin {
                 const curId = Zp.navigation.value;
                 for (const entry of Zp.panes.entries()) {
                     const pane: any = entry[1];
-                    if (pane && pane.pluginID === "weavero@mjthoraval"
+                    if (pane && pane.pluginID === "weavero-obsidian@zhibird"
                             && pane.id === curId) {
                         try { Zotero.Prefs.set("weavero._reopenOnInit", true); }
                         catch (e) {}
@@ -4364,7 +4364,7 @@ class WeaveroPlugin {
         try {
             const pp: any = Zotero.PreferencePanes;
             const ours = pp.pluginPanes
-                .filter((p) => p.pluginID === "weavero@mjthoraval");
+                .filter((p) => p.pluginID === "weavero-obsidian@zhibird");
             for (const p of ours) pp.unregister(p.id);
         } catch (e) {
             Zotero.debug("[Weavero] pref pane unregister err: " + e);
