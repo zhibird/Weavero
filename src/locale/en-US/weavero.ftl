@@ -845,6 +845,13 @@ weavero-menu-reader-copy-link-position =
 weavero-menu-reader-copy-link-location =
     .label = Copy Link to This Location
 
+# Obsidian shortcuts in the personal fork.
+weavero-menu-reader-copy-obsidian-backlink =
+    .label = 复制 Obsidian 回链
+weavero-obsidian-backlink-default-title = 返回 Zotero
+weavero-obsidian-backlink-title-prompt = 链接标题（留空使用默认标题「{ $defaultTitle }」）
+weavero-obsidian-comment-link-title = 跳转到obsidian
+
 # The tab menu (tabs.ts): Weavero's entries, and Zotero's own entries
 # Weavero relabels for a multi-selection of tabs. $count: the tabs it acts on.
 weavero-menu-tab-view-online =

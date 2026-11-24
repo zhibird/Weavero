@@ -159,6 +159,8 @@ class _ReaderMixin {
      *                  marker output (the sidebar preview's behaviour:
      *                  "view shows formatted, edit shows source"). If
      *                  unset, defaults to isTreeMode.
+     *    labelObsidian — show the Obsidian shortcut label for bare URIs
+     *                    in annotation previews.
      */
     _buildCommentFragment(text, ctx) {
         const doc = ctx.doc;
@@ -217,12 +219,13 @@ class _ReaderMixin {
             frag.appendChild(span);
             if (!stripMarkers) frag.appendChild(doc.createTextNode(marker));
         };
-        const emitUrlSpan = (label, url) => {
+        const emitUrlSpan = (label, url, bare = false) => {
             const span = doc.createElement("span");
             span.className = "wv-url-span " + this._urlLinkClass(url);
             span.title = url;
             span.textContent = label;
             span.setAttribute("data-href", url);
+            if (bare && label !== url) span.setAttribute("data-wv-bare-url", "");
             frag.appendChild(span);
         };
 
@@ -273,7 +276,8 @@ class _ReaderMixin {
                     }
                     const url   = raw.replace(this.TRAILING_RE, "");
                     const trail = raw.slice(url.length);
-                    emitUrlSpan(url, url);
+                    const label = ctx.labelObsidian ? this._wvBareCommentLinkLabel(url) : url;
+                    emitUrlSpan(label, url, true);
                     if (trail) emitText(trail);
                 }
             }
@@ -315,9 +319,11 @@ class _ReaderMixin {
             if (cls.indexOf("wv-md-code") !== -1)   { out += "`"  + txt + "`";  return; }
             if (cls.indexOf("wv-url-span") !== -1) {
                 const href = node.getAttribute("data-href") || txt;
-                // data-href differs from the visible text → it was a
-                // markdown link [label](url); equal → bare URL.
-                if (href && href !== txt) { out += "[" + txt + "](" + href + ")"; return; }
+                // A bare Obsidian URL can have a different display label.
+                if (href !== txt && !node.hasAttribute("data-wv-bare-url")) {
+                    out += "[" + txt + "](" + href + ")";
+                    return;
+                }
                 out += href || txt;
                 return;
             }
@@ -432,10 +438,14 @@ class _ReaderMixin {
         } catch (e) { return false; }
     }
 
+    _wvBareCommentLinkLabel(url: string): string {
+        return /^obsidian:\/\//i.test(url) ? wvStr("weavero-obsidian-comment-link-title") : url;
+    }
+
     _makeLink(doc, url, panel, label?) {
         const a = wvHtmlEl(doc, "a");
         a.href = url;
-        a.textContent = (label != null && label !== "") ? label : url;
+        a.textContent = (label != null && label !== "") ? label : this._wvBareCommentLinkLabel(url);
         // Hover tooltip showing the full URL — uses the browser's native
         // title-attribute tooltip so the delay and styling match what
         // Zotero shows for URL fields elsewhere in its UI.
@@ -1364,6 +1374,36 @@ class _ReaderMixin {
 
     // ---- Reader context menu ----------------------------------------------
 
+    _wvPromptObsidianBacklinkTitle(defaultTitle: string): string | null {
+        const input = { value: "" };
+        const win = Services.focus.activeWindow;
+        const accepted = Services.prompt.prompt(win,
+            wvStr("weavero-menu-reader-copy-obsidian-backlink"),
+            wvStr("weavero-obsidian-backlink-title-prompt", { defaultTitle }),
+            input, null, { value: false });
+        return accepted ? input.value : null;
+    }
+
+    _wvCopyObsidianBacklinks(links: string[]) {
+        if (!links.length) return;
+        // A modal prompt must wait for the reader's menu to close.
+        wvTimeout(() => {
+            const plugin = wvLivePlugin();
+            if (!plugin) return;
+            try {
+                const defaultTitle = wvStr("weavero-obsidian-backlink-default-title");
+                const title = plugin._wvPromptObsidianBacklinkTitle(defaultTitle);
+                if (title === null) return;
+                const label = (title.trim() || defaultTitle)
+                    .replace(/[\r\n]+/g, " ")
+                    .replace(/[\\[\]*_\x60~<>&]/g, "\\$&");
+                Zotero.Utilities.Internal.copyTextToClipboard(links.map(link => "[" + label + "](" + link + ")").join("\n"));
+            } catch (e) {
+                Zotero.debug("[Weavero] copy Obsidian backlinks err: " + e);
+            }
+        }, 0);
+    }
+
     // See _sidebarHandlerImpl — same arrow-field-to-method transform.
     _contextHandlerImpl(event) {
         const { append, params, reader } = event;
@@ -1543,6 +1583,25 @@ class _ReaderMixin {
                             }
                         },
                     });
+                    if (reader.type === "pdf") {
+                        items.push({
+                            label: iconLabel(wvStr("weavero-menu-reader-copy-obsidian-backlink"), "link"),
+                            onCommand: () => {
+                                try {
+                                    const plugin = wvLivePlugin();
+                                    if (!plugin) return;
+                                    const links = capturedKeys
+                                        .map(k => plugin._getAnnotationItem(capturedLib, k))
+                                        .filter(a => a && !a.deleted)
+                                        .map(a => plugin._buildOpenLink(a))
+                                        .filter(Boolean);
+                                    plugin._wvCopyObsidianBacklinks(links);
+                                } catch (e) {
+                                    Zotero.debug("[Weavero] reader copy Obsidian annotation links err: " + e);
+                                }
+                            },
+                        });
+                    }
                 }
             }
             items.push({
@@ -1827,6 +1886,7 @@ class _ReaderMixin {
                 return;   // unsupported reader type
             }
 
+            const obsidianLabel = reader.type === "pdf" ? wvStr("weavero-menu-reader-copy-obsidian-backlink") : null;
             try {
                 append({
                     label: MENU_LABEL,
@@ -1842,6 +1902,19 @@ class _ReaderMixin {
                         onCommand: () => {
                             try { Zotero.Utilities.Internal.copyTextToClipboard(link2); }
                             catch (e) { Zotero.debug("[Weavero] copy reader-position link err: " + e); }
+                        },
+                    });
+                }
+                if (obsidianLabel) {
+                    append({
+                        label: obsidianLabel,
+                        onCommand: () => {
+                            try {
+                                const plugin = wvLivePlugin();
+                                if (plugin) plugin._wvCopyObsidianBacklinks([capturedLink2 || capturedLink]);
+                            } catch (e) {
+                                Zotero.debug("[Weavero] reader copy Obsidian location link err: " + e);
+                            }
                         },
                     });
                 }
@@ -1872,6 +1945,11 @@ class _ReaderMixin {
                                 mi.classList.add("menuitem-iconic");
                                 mi.setAttribute("image", iconURL);
                                 stamped = true;
+                            }
+                            const obsidianItem = obsidianLabel && byLabel(popup, obsidianLabel);
+                            if (obsidianItem) {
+                                obsidianItem.classList.add("menuitem-iconic");
+                                obsidianItem.setAttribute("image", iconURL);
                             }
                             // "Copy Link to This Position" gets the same pin
                             // glyph as "Add Bookmark to This Position" -- the
@@ -14108,6 +14186,7 @@ class _ReaderMixin {
             doc, useMd, isTreeMode: false,
             stripMarkers: true,
             lineBreaks: true,
+            labelObsidian: true,
         });
 
         while (preview.firstChild) preview.removeChild(preview.firstChild);
@@ -14429,7 +14508,7 @@ class _ReaderMixin {
         for (const node of targets) {
             const frag = this._buildCommentFragment(node.nodeValue, {
                 doc, useMd: false, isTreeMode: false,
-                stripMarkers: false, lineBreaks: false,
+                stripMarkers: false, lineBreaks: false, labelObsidian: true,
             });
             node.parentNode.replaceChild(frag, node);
         }

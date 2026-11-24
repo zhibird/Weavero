@@ -9502,7 +9502,7 @@ class _PaneMixin {
                 let frag;
                 if (inlineMode) {
                     frag = this._buildCommentFragment(text, {
-                        doc, useMd, isTreeMode: true,
+                        doc, useMd, isTreeMode: true, labelObsidian: true,
                     });
                     // Cell-renderer-specific styling: inline `color` on
                     // each url-span so the active theme's CSS variable
@@ -12372,7 +12372,7 @@ class _PaneMixin {
         // (single source of truth across all 4 surfaces — see
         // reader.ts `_buildCommentFragment`).
         const frag = this._buildCommentFragment(raw, {
-            doc, useMd, isTreeMode: true,
+            doc, useMd, isTreeMode: true, labelObsidian: true,
         });
 
         // Stash the raw source BEFORE replacing children — afterwards
