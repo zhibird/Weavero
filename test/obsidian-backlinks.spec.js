@@ -2,7 +2,7 @@
 
 describe("Weavero — Obsidian backlinks", function () {
     this.timeout(30000);
-    const MENU = "复制 Obsidian 回链";
+    const MENU = "一键复制Zotero link";
     const OBSIDIAN = "obsidian://open?vault=Research%20Notes&file=Paper%20notes";
     let wv, paper, pdf, note, ink, doc, fakeReader, base;
 
