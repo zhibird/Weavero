@@ -4,9 +4,9 @@ describe("Weavero — Obsidian backlinks", function () {
     this.timeout(30000);
     const MENU = "复制 Obsidian 回链";
     const OBSIDIAN = "obsidian://open?vault=Research%20Notes&file=Paper%20notes";
-    let wv, pdf, note, ink, doc, fakeReader, base;
+    let wv, paper, pdf, note, ink, doc, fakeReader, base;
 
-    const annotate = async (type, position) => {
+    const annotate = async (type, position, comment = "") => {
         const annotation = /** @type {any} */ (new Zotero.Item("annotation"));
         annotation.libraryID = pdf.libraryID;
         annotation.parentID = pdf.id;
@@ -14,7 +14,7 @@ describe("Weavero — Obsidian backlinks", function () {
         annotation.annotationColor = "#ffd400";
         annotation.annotationPageLabel = "1";
         annotation.annotationSortIndex = "00000|000001|00000";
-        annotation.annotationComment = "Test comment";
+        annotation.annotationComment = comment;
         annotation.annotationPosition = JSON.stringify(position);
         await annotation.saveTx();
         return annotation;
@@ -23,15 +23,19 @@ describe("Weavero — Obsidian backlinks", function () {
     before(async () => {
         wv = wvT.plugin();
         doc = Zotero.getMainWindow().document;
-        pdf = await wvT.createTestPDFItem("wv-obsidian-backlinks");
+        paper = await wvT.createItem("journalArticle", {
+            title: "Learning Personalized Longitudinal Imaging",
+            shortTitle: "Longitudinal imaging",
+        });
+        pdf = await wvT.createTestPDFItem("wv-obsidian-backlinks", { parentItemID: paper.id });
         fakeReader = { type: "pdf", itemID: pdf.id, _item: pdf };
         base = "zotero://open/library/items/" + pdf.key;
-        note = await annotate("note", { pageIndex: 0, rects: [[10, 10, 34, 34]] });
+        note = await annotate("note", { pageIndex: 0, rects: [[10, 10, 34, 34]] }, "[导读](" + OBSIDIAN + ")");
         ink = await annotate("ink", { pageIndex: 0, width: 2, paths: [[10, 10, 40, 40]] });
     });
 
     after(async () => {
-        await wvT.erase(ink, note, pdf);
+        await wvT.erase(ink, note, pdf, paper);
     });
 
     const copyFromMenu = (handler, reader, params) => {
@@ -65,6 +69,7 @@ describe("Weavero — Obsidian backlinks", function () {
             const position = wv._wvDecodeSelectionPos(new URL(link).searchParams.get("wvpos"));
             assert.equal(position.kind, "pin");
             assert.deepEqual(position.position.rects, [[45, 70, 45, 70]]);
+            assert.equal(wv._wvObsidianBacklinkDefaultTitle(link), "定位点 45, 70 · 第 1 页 · Longitudinal imaging");
         } finally { wv._wvClickPointToPdf = original; }
     });
 
@@ -79,6 +84,7 @@ describe("Weavero — Obsidian backlinks", function () {
         assert.equal(position.kind, "text");
         assert.equal(position.text, reader._wvLastSelection.text);
         assert.deepEqual(position.position.rects, reader._wvLastSelection.position.rects);
+        assert.equal(wv._wvObsidianBacklinkDefaultTitle(link), "A selected paragraph · 第 1 页 · Longitudinal imaging");
     });
 
     it("keeps the sticky note and ink annotation keys in their selection order", () => {
@@ -86,20 +92,28 @@ describe("Weavero — Obsidian backlinks", function () {
         assert.deepEqual(links, [base + "?annotation=" + note.key, base + "?annotation=" + ink.key]);
     });
 
-    it("copies Markdown using a default or literal custom title and respects cancellation", async () => {
+    it("keeps source-specific defaults for each Markdown link and accepts a custom title", async () => {
         wvT.method("_wvCopyObsidianBacklinks");
         wvT.method("_wvPromptObsidianBacklinkTitle");
         const prompt = wv._wvPromptObsidianBacklinkTitle;
         const clipboard = Zotero.Utilities.Internal.copyTextToClipboard;
         const copies = [];
-        let answer, asked = 0;
-        wv._wvPromptObsidianBacklinkTitle = () => { asked++; return answer; };
+        let answer;
+        const prompts = [];
+        wv._wvPromptObsidianBacklinkTitle = defaultTitle => { prompts.push(defaultTitle); return answer; };
         Zotero.Utilities.Internal.copyTextToClipboard = value => { copies.push(value); };
         try {
             answer = "  ";
-            wv._wvCopyObsidianBacklinks([base]);
+            const noteLink = base + "?annotation=" + note.key;
+            const inkLink = base + "?annotation=" + ink.key;
+            wv._wvCopyObsidianBacklinks([noteLink, inkLink, base + "?page=2"]);
             await wvT.waitFor(() => copies.length === 1);
-            assert.deepEqual(copies, ["[返回 Zotero](" + base + ")"]);
+            assert.equal(copies[0], [
+                "[导读 · 第 1 页 · Longitudinal imaging](" + noteLink + ")",
+                "[Ink annotation " + ink.key.slice(-4) + " · 第 1 页 · Longitudinal imaging](" + inkLink + ")",
+                "[第 2 页 · Longitudinal imaging](" + base + "?page=2)",
+            ].join("\n"));
+            assert.deepEqual(prompts, [null], "a batch uses one prompt and separate defaults");
 
             answer = " Figure [1] ";
             wv._wvCopyObsidianBacklinks([base + "?page=1", base + "?page=2"]);
@@ -108,8 +122,9 @@ describe("Weavero — Obsidian backlinks", function () {
                 + "[Figure \\[1\\]](" + base + "?page=2)");
 
             answer = null;
-            wv._wvCopyObsidianBacklinks([base]);
-            await wvT.waitFor(() => asked === 3);
+            wv._wvCopyObsidianBacklinks([base + "?page=1"]);
+            await wvT.waitFor(() => prompts.length === 3);
+            assert.equal(prompts[2], "第 1 页 · Longitudinal imaging");
             assert.lengthOf(copies, 2);
         } finally {
             wv._wvPromptObsidianBacklinkTitle = prompt;

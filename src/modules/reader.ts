@@ -35,7 +35,7 @@ import { wvStoreWrite, wvStoreRead, wvStoreRemove } from "../lib/store";
 import { wvTimeout } from "../lib/timers";
 import { wvListen, wvListener, wvUnlisten, wvEventOpts } from "../lib/listen";
 import { wvWrap, wvUnwrap } from "../lib/wrap";
-import { urlPattern, wvLinkVars } from "../lib/links";
+import { schemeAltPart, urlPattern, wvLinkVars } from "../lib/links";
 import { wvMainWins, wvNativeWindows, wvWinType } from "../lib/windows";
 import { wvAccel } from "../lib/keys";
 import { wvCloneFor } from "../lib/xray";
@@ -47,6 +47,15 @@ import { wvAltReveal, wvMenubarTakesNonMenus, wvMenubarSafeBefore } from "../lib
 import { wvL10n, wvStr, wvAttr, wvDataLabel, wvZoteroLabel, wvZoteroText } from "../lib/l10n";
 import { wvMenuItemByLabel } from "../lib/menu";
 import { wvUIRoot } from "../lib/ui-roots";
+
+function wvObsidianTitleExcerpt(value: unknown, limit: number): string {
+    const text = String(value ?? "").replace(/\s+/g, " ").trim();
+    const characters = Array.from(text);
+    if (characters.length <= limit) return text;
+    const prefix = characters.slice(0, limit).join("");
+    const boundary = prefix.lastIndexOf(" ");
+    return (boundary >= limit * 0.7 ? prefix.slice(0, boundary) : prefix).trimEnd() + "…";
+}
 
 class _ReaderMixin {
     [k: string]: any;
@@ -1374,13 +1383,62 @@ class _ReaderMixin {
 
     // ---- Reader context menu ----------------------------------------------
 
-    _wvPromptObsidianBacklinkTitle(defaultTitle: string): string | null {
+    _wvObsidianBacklinkDefaultTitle(link: string): string {
+        const target = this._wvApiParseLink(link);
+        const libraryID = target ? this._wvApiLib(target.groupID) : null;
+        const attachment = libraryID != null && target?.keys[0]
+            ? Zotero.Items.getByLibraryAndKey(libraryID, target.keys[0]) || null : null;
+        const paper = attachment?.parentItem || null;
+        const source = wvObsidianTitleExcerpt(
+            paper?.getField("shortTitle") || paper?.getDisplayTitle()
+                || attachment?.attachmentFilename || attachment?.getDisplayTitle() || "PDF", 48);
+        const position = this._wvDecodeSelectionPos(new URL(link).searchParams.get("wvpos") || "");
+        let pageIndex = position?.position.pageIndex ?? (target?.page ? target.page - 1 : null);
+        let pageLabel = "";
+        let detail = wvObsidianTitleExcerpt(position?.text, 56);
+
+        const annotation = target?.annotationKey && libraryID != null
+            ? this._getAnnotationItem(libraryID, target.annotationKey) : null;
+        if (annotation) {
+            pageLabel = annotation.annotationPageLabel || "";
+            if (!pageLabel) {
+                try { pageIndex = JSON.parse(annotation.annotationPosition)?.pageIndex ?? pageIndex; }
+                catch (e) {}
+            }
+            // Match bookmark naming (annotated text first, then the comment).
+            // Keep a Markdown link's label and omit raw URLs from the title.
+            const urls = new RegExp(urlPattern(this.URL_SCHEME_ALT + "|" + schemeAltPart("obsidian", "://")), "gi");
+            const text = String(annotation.annotationText || "").trim();
+            const comment = String(annotation.annotationComment || "")
+                .replace(/\[([^\]\n]+?)\]\([^\s)]+\)/g, "$1")
+                .replace(urls, "");
+            detail = wvObsidianTitleExcerpt(text || comment, 56);
+            if (!detail) {
+                const type = this._wvReaderAnnLabel({ annotationType: annotation.annotationType });
+                detail = type + " " + annotation.key.slice(-4);
+            }
+        } else if (position?.kind === "pin") {
+            const [x, y] = position.position.rects[0];
+            detail = wvStr("weavero-obsidian-backlink-pin", { x: Math.round(x), y: Math.round(y) });
+        }
+
+        if (!pageLabel && Number.isInteger(pageIndex) && pageIndex >= 0) {
+            pageLabel = this._wvBmPageLabelFor(
+                attachment && { libraryID: attachment.libraryID, itemKey: attachment.key }, pageIndex);
+        }
+        const page = pageLabel ? wvStr("weavero-obsidian-backlink-page", { page: pageLabel }) : "";
+        return this.normalize([detail, page, source].filter(Boolean).join(" · "));
+    }
+
+    _wvPromptObsidianBacklinkTitle(defaultTitle: string | null): string | null {
         const input = { value: "" };
         const win = Services.focus.activeWindow;
+        const message = defaultTitle
+            ? wvStr("weavero-obsidian-backlink-title-prompt", { defaultTitle })
+            : wvStr("weavero-obsidian-backlink-titles-prompt");
         const accepted = Services.prompt.prompt(win,
             wvStr("weavero-menu-reader-copy-obsidian-backlink"),
-            wvStr("weavero-obsidian-backlink-title-prompt", { defaultTitle }),
-            input, null, { value: false });
+            message, input, null, { value: false });
         return accepted ? input.value : null;
     }
 
@@ -1391,13 +1449,17 @@ class _ReaderMixin {
             const plugin = wvLivePlugin();
             if (!plugin) return;
             try {
-                const defaultTitle = wvStr("weavero-obsidian-backlink-default-title");
-                const title = plugin._wvPromptObsidianBacklinkTitle(defaultTitle);
+                const titles: string[] = links.map(link => plugin._wvObsidianBacklinkDefaultTitle(link));
+                const title = plugin._wvPromptObsidianBacklinkTitle(titles.length === 1 ? titles[0] : null);
                 if (title === null) return;
-                const label = (title.trim() || defaultTitle)
-                    .replace(/[\r\n]+/g, " ")
-                    .replace(/[\\[\]*_\x60~<>&]/g, "\\$&");
-                Zotero.Utilities.Internal.copyTextToClipboard(links.map(link => "[" + label + "](" + link + ")").join("\n"));
+                const customTitle = title.trim();
+                const markdown = links.map((link, index) => {
+                    const label = (customTitle || titles[index])
+                        .replace(/[\r\n]+/g, " ")
+                        .replace(/[\\[\]*_\x60~<>&]/g, "\\$&");
+                    return "[" + label + "](" + link + ")";
+                });
+                Zotero.Utilities.Internal.copyTextToClipboard(markdown.join("\n"));
             } catch (e) {
                 Zotero.debug("[Weavero] copy Obsidian backlinks err: " + e);
             }
