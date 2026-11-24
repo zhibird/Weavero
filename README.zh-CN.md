@@ -30,9 +30,9 @@
 
 ### 留空使用默认标题
 
-标题留空，复制后直接粘进 Obsidian。链接文字包含选区摘要、页码和论文短标题。
+标题留空，复制后直接粘进 Obsidian。链接文字包含选区摘要、页码和论文短标题。最后一帧展示用同一条链接在独立 Zotero 实例中打开并定位到原高亮。
 
-![Zotero 复制高亮链接时自动生成标题，Obsidian 显示粘贴后的链接](docs/demos/copy-default-title.gif)
+![Zotero 自动生成高亮链接的标题，Obsidian 显示链接，同一条链接打开原高亮](docs/demos/copy-default-title.gif)
 
 ### 输入自定义标题
 

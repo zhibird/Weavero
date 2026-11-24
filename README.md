@@ -30,9 +30,9 @@ Recorded on macOS using a sample library in Zotero 11 beta and Obsidian 1.15.1. 
 
 ### Copy with the default title
 
-Leave the title blank and paste the resulting Markdown into Obsidian. The link shows the excerpt, page number, and paper short title.
+Leave the title blank and paste the resulting Markdown into Obsidian. The link shows the excerpt, page number, and paper short title. The last frame shows the original highlight selected after opening that same link in the isolated Zotero instance.
 
-![Zotero copies a highlight with a default title and Obsidian renders the pasted link](docs/demos/copy-default-title.gif)
+![Zotero copies a highlight with a default title, Obsidian renders the pasted link, and the link opens the original highlight](docs/demos/copy-default-title.gif)
 
 ### Copy with a custom title
 
