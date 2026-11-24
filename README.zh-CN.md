@@ -6,7 +6,7 @@
 
 ## 安装
 
-1. 使用 Zotero 9 或 10 桌面版。演示使用 macOS 上的 Zotero 10。
+1. 使用 Zotero 9 或 10 桌面版。
 2. 在「工具 → 插件」中，先停用原版 Weavero 或此前的个人测试版。两个版本共用 Weavero 设置和阅读器集成。
 3. 下载 [weavero-obsidian.xpi](https://github.com/zhibird/Weavero/releases/latest/download/weavero-obsidian.xpi)，拖进插件窗口，或选择 **Install Plugin From File…**。
 4. 在「设置 → Weavero → Links & Relations」中选择 **Inline**，开启 **App links**，再在 **App Link Schemes** 中开启 **obsidian://**。
@@ -22,7 +22,29 @@
 
 ## 从 Zotero 打开 Obsidian 笔记
 
-在 Obsidian 笔记中执行「复制 Obsidian URL」，把地址直接粘进 Zotero 批注评论。退出编辑后会显示紫色的 **跳转到obsidian**。点它即可打开对应笔记。也可以用 Markdown 自定义显示文字，例如 `[阅读笔记](obsidian://open?vault=Demo&file=Reading%20Notes)`。
+在 Obsidian 命令面板执行「复制 Obsidian URI」，把地址直接粘进 Zotero 批注评论。退出编辑后会显示紫色的 **跳转到obsidian**。点它即可打开对应笔记。也可以用 Markdown 自定义显示文字，例如 `[阅读笔记](obsidian://open?vault=Demo&file=Reading%20Notes)`。
+
+## 实机演示
+
+在 macOS 上使用 Zotero 11 Beta、Obsidian 1.15.1 和独立示例文库录制。v1.1.1 安装包声明支持 Zotero 9 和 10。
+
+### 留空使用默认标题
+
+标题留空，复制后直接粘进 Obsidian。链接文字包含选区摘要、页码和论文短标题。
+
+![Zotero 复制高亮链接时自动生成标题，Obsidian 显示粘贴后的链接](docs/demos/copy-default-title.gif)
+
+### 输入自定义标题
+
+在对话框里输入想在笔记中看到的链接标题，再粘贴到笔记。
+
+![在 Zotero 输入自定义标题，Obsidian 并排展示默认标题和自定义标题](docs/demos/copy-custom-title.gif)
+
+### 从 Zotero 批注打开 Obsidian 笔记
+
+把笔记 URI 粘到批注评论，退出编辑后点紫色链接。
+
+![Obsidian URI 粘到 Zotero 后变成紫色链接，点击打开对应笔记](docs/demos/open-obsidian-note.gif)
 
 ## 源码与许可证
 

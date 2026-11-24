@@ -6,7 +6,7 @@ Jump between passages in Zotero PDFs and reading notes in Obsidian. This indepen
 
 ## Install
 
-1. Use Zotero desktop 9 or 10. The demonstration uses Zotero 10 on macOS.
+1. Use Zotero desktop 9 or 10.
 2. In **Tools → Plugins**, disable the original Weavero or the earlier personal test build. Both use the same Weavero settings and reader integration.
 3. Download [weavero-obsidian.xpi](https://github.com/zhibird/Weavero/releases/latest/download/weavero-obsidian.xpi) and drag it into the Plugins window, or choose **Install Plugin From File…**.
 4. In **Settings → Weavero → Links & Relations**, choose **Inline**, enable **App links**, and enable **obsidian://** under **App Link Schemes**.
@@ -22,7 +22,29 @@ Paste the Markdown into your note. In Reading view, click the link to return to 
 
 ## Open an Obsidian note from Zotero
 
-In Obsidian, select **Copy Obsidian URL** for the note. Paste it into a Zotero annotation comment. When you leave the editor, it appears as the purple link **跳转到obsidian**. Click it to open the note. You can specify your own visible text with a Markdown link such as `[Reading notes](obsidian://open?vault=Demo&file=Reading%20Notes)`.
+In Obsidian, run **Copy Obsidian URI** for the note. Paste it into a Zotero annotation comment. When you leave the editor, it appears as the purple link **跳转到obsidian**. Click it to open the note. You can specify your own visible text with a Markdown link such as `[Reading notes](obsidian://open?vault=Demo&file=Reading%20Notes)`.
+
+## Demos
+
+Recorded on macOS using a sample library in Zotero 11 beta and Obsidian 1.15.1. The v1.1.1 package declares support for Zotero 9 and 10.
+
+### Copy with the default title
+
+Leave the title blank and paste the resulting Markdown into Obsidian. The link shows the excerpt, page number, and paper short title.
+
+![Zotero copies a highlight with a default title and Obsidian renders the pasted link](docs/demos/copy-default-title.gif)
+
+### Copy with a custom title
+
+Enter a label and paste the link into the same reading note.
+
+![Zotero accepts a custom title and Obsidian displays it beside the default title](docs/demos/copy-custom-title.gif)
+
+### Open an Obsidian note from a Zotero annotation
+
+Copy the note URI, paste it into the annotation comment, then open the purple link.
+
+![The pasted Obsidian URI becomes a purple link in Zotero and opens Reading Notes](docs/demos/open-obsidian-note.gif)
 
 ## Source and license
 
