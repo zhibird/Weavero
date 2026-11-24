@@ -1,3 +1,36 @@
+# Weavero for Obsidian
+
+English · [简体中文](README.zh-CN.md)
+
+Jump between passages in Zotero PDFs and reading notes in Obsidian. This independent fork builds on [Weavero v1.1.0](https://github.com/mjthoraval/Weavero/tree/v1.1.0) by mjthoraval and contributors.
+
+## Install
+
+1. Use Zotero desktop 9 or 10. The demonstration uses Zotero 10 on macOS.
+2. In **Tools → Plugins**, disable the original Weavero or the earlier personal test build. Both use the same Weavero settings and reader integration.
+3. Download [weavero-obsidian.xpi](https://github.com/zhibird/Weavero/releases/latest/download/weavero-obsidian.xpi) and drag it into the Plugins window, or choose **Install Plugin From File…**.
+4. In **Settings → Weavero → Links & Relations**, choose **Inline**, enable **App links**, and enable **obsidian://** under **App Link Schemes**.
+
+## Copy a Zotero link into Obsidian
+
+Right-click a blank area in a PDF, selected text, or an annotation. The annotation card's three-dot menu also works. Select **一键复制Zotero link**.
+
+- **Default title.** Leave the field blank. Each link uses a selection or annotation excerpt, the page, and the paper's short title. A link to a blank area uses its page and position when available.
+- **Custom title.** Enter the title that should appear in Obsidian. For a batch, the custom title applies to each selected annotation.
+
+Paste the Markdown into your note. In Reading view, click the link to return to the PDF. Exact text and position links use Weavero's reader integration. Zotero opens standard page and annotation links directly.
+
+## Open an Obsidian note from Zotero
+
+In Obsidian, select **Copy Obsidian URL** for the note. Paste it into a Zotero annotation comment. When you leave the editor, it appears as the purple link **跳转到obsidian**. Click it to open the note. You can specify your own visible text with a Markdown link such as `[Reading notes](obsidian://open?vault=Demo&file=Reading%20Notes)`.
+
+## Source and license
+
+This fork is distributed under [AGPL-3.0](LICENSE). See [upstream Weavero](https://github.com/mjthoraval/Weavero/tree/v1.1.0) for the original filters, bookmarks, reader tools, and APIs. Releases for this edition are on [zhibird/Weavero](https://github.com/zhibird/Weavero/releases).
+
+<details>
+<summary>Original Weavero reference</summary>
+
 <h1>
   <img src="src/icons/icon-96.png" alt="" width="48" height="48" align="absmiddle">
   Weavero
@@ -380,3 +413,5 @@ The in-document position-bookmark marker uses the `pin-angle-fill` glyph from
 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). The History menu's annotation
 glyph is Zotero's own `annotation.svg` ([zotero/zotero](https://github.com/zotero/zotero),
 AGPL-3.0, the same licence as Weavero).
+
+</details>
